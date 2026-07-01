@@ -1,3 +1,17 @@
+/*
+===============================================================
+DDL Script: Initialize Database and Schemas
+===============================================================
+Script Purpose:
+    This script creates the 'DataWarehouse' database and the
+    three schemas: bronze, silver, and gold.
+    Run this script once to set up the initial database structure.
+
+    Warning: This script drops and recreates the database.
+    All existing data will be lost.
+===============================================================
+*/
+
 -- Drop and recreate database
 DROP DATABASE IF EXISTS "DataWarehouse";
 CREATE DATABASE "DataWarehouse";
