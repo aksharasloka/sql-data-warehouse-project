@@ -1,7 +1,7 @@
 /*
-=====================================================================
+===============================================================
 Stored Procedure: Load Silver Layer
-=====================================================================
+===============================================================
 Script Purpose:
     This procedure performs data cleansing and transformation
     on the bronze layer tables and loads the results into the
@@ -16,7 +16,7 @@ Script Purpose:
     Run this procedure after loading the bronze layer.
 
     Usage: CALL silver.load_silver();
-======================================================================
+===============================================================
 */
 
 CREATE OR REPLACE PROCEDURE silver.load_silver()
@@ -42,7 +42,6 @@ BEGIN
 		start_time:= clock_timestamp();
 
 		TRUNCATE TABLE silver.crm_cust_info;
-		RAISE NOTICE '>>Inserting Data into: silver.crm_cust_info';
 		INSERT INTO silver.crm_cust_info(
 			cst_id,
 			cst_key,
@@ -77,12 +76,14 @@ BEGIN
 		end_time:=clock_timestamp();
 
 		RAISE NOTICE '>> Load Duration: % seconds',EXTRACT(EPOCH FROM(end_time-start_time));
+		
+		-- ===============================================================================
+		-- Inserting into silver.crm_prd_info table after cleaning & data transformations
+		-- ===============================================================================
 
 		start_time:=clock_timestamp();
 		
 		Truncate Table silver.crm_prd_info;
-
-		RAISE NOTICE '>>Inserting Data into: silver.crm_prd_info';
 		INSERT INTO silver.crm_prd_info(
 			prd_id,
 			cat_id,
@@ -112,12 +113,12 @@ BEGIN
 		end_time:=clock_timestamp(); 
 
 		RAISE NOTICE '>> Load Duration: % seconds',EXTRACT(EPOCH FROM(end_time-start_time));
+		-- ===================================================================================
+		-- Inserting into silver.crm_sales_details table after cleaning & data transformations
+		-- ===================================================================================
 
 		start_time:=clock_timestamp();
 		TRUNCATE TABLE silver.crm_sales_details;
-		
-		RAISE NOTICE '>>Inserting Data into: silver.crm_sales_details';
-		
 		INSERT INTO silver.crm_sales_details(
 			sls_ord_num,
 			sls_prd_key,
@@ -155,12 +156,12 @@ BEGIN
 		end_time:=clock_timestamp();
 		RAISE NOTICE '>> Load Duration: % seconds',EXTRACT(EPOCH FROM(end_time-start_time));
 		
+		-- ===================================================================================
+		-- Inserting into silver.erp_cust_az12 table after cleaning & data transformations
+		-- ===================================================================================
 		start_time:=clock_timestamp();
 		
 		TRUNCATE TABLE silver.erp_cust_az12;
-
-		RAISE NOTICE '>>Inserting Data into: silver.erp_cust_az12';
-		
 		INSERT INTO silver.erp_cust_az12(
 			cid,
 			bdate,
@@ -181,13 +182,13 @@ BEGIN
 		end_time:=clock_timestamp();
 
 		RAISE NOTICE '>> Load Duration: % seconds',EXTRACT(EPOCH FROM(end_time-start_time));
+		-- ===================================================================================
+		-- Inserting into silver.erp_loc_a101 table after cleaning & data transformations
+		-- ===================================================================================
 
 		start_time:=clock_timestamp();
 
 		TRUNCATE TABLE silver.erp_loc_a101;
-
-		RAISE NOTICE '>>Inserting Data into: silver.erp_loc_a101';
-		
 		INSERT INTO silver.erp_loc_a101(
 			cid,
 			cntry
@@ -203,13 +204,14 @@ BEGIN
 		end_time:=clock_timestamp();
 
 		RAISE NOTICE '>> Load Duration: % seconds',EXTRACT(EPOCH FROM(end_time-start_time));
+		
+		-- ===================================================================================
+		-- Inserting into silver.erp_px_cat_g1v2 table after cleaning & data transformations
+		-- ===================================================================================
 
 		start_time:=clock_timestamp();
 		
 		TRUNCATE TABLE silver.erp_px_cat_g1v2;
-
-		RAISE NOTICE '>>Inserting Data into: silver.erp_px_cat_g1v2';
-		
 		INSERT INTO silver.erp_px_cat_g1v2(
 			id,
 			cat,
@@ -234,9 +236,7 @@ BEGIN
 	EXCEPTION 
 		WHEN OTHERS THEN 
 			RAISE NOTICE 'Error Occured while loading silver layer: %',SQLERRM;
-	END; 
+	END;
 END;
-$$;  
+$$;
 
-
-		
